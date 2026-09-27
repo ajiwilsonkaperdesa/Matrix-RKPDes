@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Input RKP Desa Tahun 2027 – Desa Kaduagung</title>
+  <style>
+    /* =========================================================
+       1. STYLING UMUM & DARK MODE
+       ========================================================= */
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --border-color: #333333;
+      --primary-color: #0d6efd;
+      --success-color: #198754;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    /* Panel Kontrol & Input Pagu */
+    .control-panel {
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 25px;
+    }
+
+    .pagu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+      color: #aaa;
+    }
+
+    .form-group input, .form-group select {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid var(--border-color);
+      background-color: #2a2a2a;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    /* Tombol Aksi */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover { opacity: 0.85; }
+    .btn-primary { background-color: var(--primary-color); color: white; }
+    .btn-success { background-color: var(--success-color); color: white; }
+    .btn-warning { background-color: var(--warning-color); color: #000; }
+    .btn-danger { background-color: var(--danger-color); color: white; }
+
+    /* Tabel Styling Layar */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--card-bg);
+      margin-bottom: 10px;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: #252525;
+      color: #fff;
+      text-align: center;
+    }
+
+    .tr-subtotal {
+      background-color: #2a2a2a;
+      font-weight: bold;
+    }
+
+    .tr-subtotal td {
+      border-top: 2px solid #555;
+      border-bottom: 2px solid #555;
+    }
+
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+
+    /* Modal Kamus SDGs */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    /* Tanda Tangan LAYAR */
+    .signature-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding: 0 50px;
+    }
+
+    .signature-box {
+      text-align: center;
+      width: 280px;
+    }
+
+
+    /* =========================================================
+       2. STYLING CETAK / PRINT (KERTAS F4 LANDSCAPE)
+       ========================================================= */
+    @page {
+      size: 330mm 215mm landscape;
+      margin: 10mm;
+    }
+
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Times New Roman', Times, serif !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .no-print, button, .modal, .control-panel {
+        display: none !important;
+      }
+
+      .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+      }
+
+      h1, h2, h3 {
+        color: #000 !important;
+        margin: 5px 0 !important;
+      }
+
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        background-color: transparent !important;
+        margin-bottom: 15px !important;
+        page-break-inside: auto;
+      }
+
+      tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+      }
+
+      th, td {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        padding: 5px 8px !important;
+        font-size: 10pt !important;
+      }
+
+      th {
+        background-color: #f2f2f2 !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .tr-subtotal {
+        background-color: #f9f9f9 !important;
+        font-weight: bold !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .tr-subtotal td {
+        border-top: 2px solid #000 !important;
+        border-bottom: 2px solid #000 !important;
+      }
+
+      .signature-section {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-top: 30px !important;
+        padding: 0 40px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .signature-box {
+        width: 280px !important;
+        text-align: center !important;
+        color: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- JUDUL DOKUMEN DESA KADUAGUNG -->
+  <div class="text-center" style="margin-bottom: 20px;">
+    <h2>PEMETAAN ANGGARAN & DOKUMEN Rencana Kerja Pemerintah Desa (RKP Desa)</h2>
+    <h3>DESA KADUAGUNG – TAHUN ANGGARAN <span id="txt_tahun_judul">2027</span></h3>
+  </div>
+
+  <!-- PANEL KONTROL & PAGU INDIKATIF -->
+  <div class="control-panel no-print">
+    <h3>Panel Kontrol & Indikator Anggaran</h3>
+    <div class="pagu-grid">
+      <div class="form-group">
+        <label>Tahun Anggaran:</label>
+        <select id="inp_tahun" onchange="gantiTahun()">
+          <option value="2027" selected>2027</option>
+          <option value="2028">2028</option>
+          <option value="2029">2029</option>
+          <option value="2030">2030</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Pagu Indikatif (Rp):</label>
+        <input type="number" id="inp_pagu" value="827799193" oninput="simpanDanHitung()">
+      </div>
+      <div class="form-group">
+        <label>Total Teralokasi (Rp):</label>
+        <input type="text" id="inp_total_alokasi" value="0" readonly>
+      </div>
+      <div class="form-group">
+        <label>Sisa / Selisih Pagu (Rp):</label>
+        <input type="text" id="inp_sisa_pagu" value="0" readonly>
+      </div>
+    </div>
+
+    <!-- Input Tambah Kegiatan Manual -->
+    <hr style="border-color: var(--border-color); margin: 15px 0;">
+    <h4>Input Kegiatan Baru</h4>
+    <div class="pagu-grid">
+      <div class="form-group">
+        <label>Pilih Bidang:</label>
+        <select id="inp_bidang_target">
+          <option value="1">Bidang 1: Penyelenggaraan Pemerintahan</option>
+          <option value="2">Bidang 2: Pembangunan Desa</option>
+          <option value="3">Bidang 3: Pembinaan Kemasyarakatan</option>
+          <option value="4">Bidang 4: Pemberdayaan Masyarakat</option>
+          <option value="5">Bidang 5: Penanggulangan Bencana / Darurat</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Kode Kegiatan:</label>
+        <input type="text" id="inp_kode" placeholder="Contoh: 1.1.01">
+      </div>
+      <div class="form-group">
+        <label>Nama Kegiatan:</label>
+        <input type="text" id="inp_nama" placeholder="Nama kegiatan..." oninput="autoDetectData(this.value)">
+      </div>
+      <div class="form-group">
+        <label>Volume:</label>
+        <input type="number" id="inp_vol_jumlah" value="1" oninput="hitungInputManual()">
+      </div>
+      <div class="form-group">
+        <label>Satuan Volume:</label>
+        <input type="text" id="inp_vol_satuan" placeholder="Contoh: Paket / Bulan / Orang">
+      </div>
+      <div class="form-group">
+        <label>Harga Satuan (Rp):</label>
+        <input type="number" id="inp_harga_satuan" value="0" oninput="hitungInputManual()">
+      </div>
+      <div class="form-group">
+        <label>Total Biaya (Rp):</label>
+        <input type="number" id="inp_total_biaya" value="0" readonly>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-primary" onclick="tambahKegiatanManual()">+ Tambah Kegiatan</button>
+      <button class="btn-warning" onclick="bukaKamus()">📖 Buka Kamus SDGs Desa</button>
+      <button class="btn-danger" onclick="resetKeDefault()">🔄 Reset ke Default</button>
+      <button class="btn-success" onclick="window.print()">🖨️ Cetak / Print F4</button>
+    </div>
+  </div>
+
+  <!-- TABEL BIDANG 1 SAMPAI 5 -->
+  <!-- BIDANG 1 -->
+  <h3>BIDANG 1: PENYELENGGARAAN PEMERINTAHAN DESA</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50px;">No</th>
+          <th style="width: 120px;">Kode</th>
+          <th>Nama Kegiatan</th>
+          <th style="width: 80px;">Vol</th>
+          <th style="width: 100px;">Satuan</th>
+          <th style="width: 150px;">Harga Satuan (Rp)</th>
+          <th style="width: 160px;">Total (Rp)</th>
+          <th style="width: 70px;" class="no-print">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="body_bidang_1"></tbody>
+      <tfoot>
+        <tr class="tr-subtotal">
+          <td colspan="6" class="text-right">JUMLAH TOTAL BIDANG 1:</td>
+          <td id="subtotal_bidang_1" class="text-right">Rp 0</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- BIDANG 2 -->
+  <h3>BIDANG 2: PELAKSANAAN PEMBANGUNAN DESA</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50px;">No</th>
+          <th style="width: 120px;">Kode</th>
+          <th>Nama Kegiatan</th>
+          <th style="width: 80px;">Vol</th>
+          <th style="width: 100px;">Satuan</th>
+          <th style="width: 150px;">Harga Satuan (Rp)</th>
+          <th style="width: 160px;">Total (Rp)</th>
+          <th style="width: 70px;" class="no-print">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="body_bidang_2"></tbody>
+      <tfoot>
+        <tr class="tr-subtotal">
+          <td colspan="6" class="text-right">JUMLAH TOTAL BIDANG 2:</td>
+          <td id="subtotal_bidang_2" class="text-right">Rp 0</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- BIDANG 3 -->
+  <h3>BIDANG 3: PEMBINAAN KEMASYARAKATAN DESA</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50px;">No</th>
+          <th style="width: 120px;">Kode</th>
+          <th>Nama Kegiatan</th>
+          <th style="width: 80px;">Vol</th>
+          <th style="width: 100px;">Satuan</th>
+          <th style="width: 150px;">Harga Satuan (Rp)</th>
+          <th style="width: 160px;">Total (Rp)</th>
+          <th style="width: 70px;" class="no-print">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="body_bidang_3"></tbody>
+      <tfoot>
+        <tr class="tr-subtotal">
+          <td colspan="6" class="text-right">JUMLAH TOTAL BIDANG 3:</td>
+          <td id="subtotal_bidang_3" class="text-right">Rp 0</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- BIDANG 4 -->
+  <h3>BIDANG 4: PEMBERDAYAAN MASYARAKAT DESA</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50px;">No</th>
+          <th style="width: 120px;">Kode</th>
+          <th>Nama Kegiatan</th>
+          <th style="width: 80px;">Vol</th>
+          <th style="width: 100px;">Satuan</th>
+          <th style="width: 150px;">Harga Satuan (Rp)</th>
+          <th style="width: 160px;">Total (Rp)</th>
+          <th style="width: 70px;" class="no-print">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="body_bidang_4"></tbody>
+      <tfoot>
+        <tr class="tr-subtotal">
+          <td colspan="6" class="text-right">JUMLAH TOTAL BIDANG 4:</td>
+          <td id="subtotal_bidang_4" class="text-right">Rp 0</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- BIDANG 5 -->
+  <h3>BIDANG 5: PENANGGULANGAN BENCANA, DARURAT DAN MENDESAK DESA</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50px;">No</th>
+          <th style="width: 120px;">Kode</th>
+          <th>Nama Kegiatan</th>
+          <th style="width: 80px;">Vol</th>
+          <th style="width: 100px;">Satuan</th>
+          <th style="width: 150px;">Harga Satuan (Rp)</th>
+          <th style="width: 160px;">Total (Rp)</th>
+          <th style="width: 70px;" class="no-print">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="body_bidang_5"></tbody>
+      <tfoot>
+        <tr class="tr-subtotal">
+          <td colspan="6" class="text-right">JUMLAH TOTAL BIDANG 5:</td>
+          <td id="subtotal_bidang_5" class="text-right">Rp 0</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- TANDA TANGAN -->
+  <div class="signature-section">
+    <div class="signature-box">
+      <p>Mengetahui,<br><strong>Kepala Desa Kaduagung</strong></p>
+      <br><br><br><br>
+      <p><strong>( ________________________ )</strong></p>
+    </div>
+    <div class="signature-box">
+      <p>Desa Kaduagung, ..... .............. <span id="txt_tahun_ttd">2027</span><br>Dibuat Oleh,<br><strong>Kaur Perencanaan Desa</strong></p>
+      <br><br><br>
+      <p><strong>( ________________________ )</strong></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL KAMUS SDGS DESA -->
+<div id="modalKamus" class="modal no-print">
+  <div class="modal-content">
+    <h3>Kamus Rujukan Kegiatan & SDGs Desa</h3>
+    <input type="text" id="inp_filter_kamus" placeholder="Cari kegiatan..." oninput="filterKamus()" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+    <div id="kamus_list"></div>
+    <div style="text-align: right; margin-top: 15px;">
+      <button class="btn-danger" onclick="tutupKamus()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const kamusSDGsData = [
+    { kode: "1.1.01", nama: "Penyediaan Penghasilan Tetap dan Tunjangan Kepala Desa", bidang: 1, satuan: "Bulan" },
+    { kode: "1.1.02", nama: "Penyediaan Penghasilan Tetap dan Tunjangan Perangkat Desa", bidang: 1, satuan: "Bulan" },
+    { kode: "1.1.03", nama: "Penyediaan Operasional Pemerintah Desa (Siltap, ATK, dll)", bidang: 1, satuan: "Tahun" },
+    { kode: "1.2.01", nama: "Penyelenggaraan Musyawarah Desa (Musdes/Musrenbangdes)", bidang: 1, satuan: "Kegiatan" },
+    { kode: "2.1.01", nama: "Pembangunan/Rehabilitasi/Peningkatan Jalan Desa", bidang: 2, satuan: "Meter" },
+    { kode: "2.1.02", nama: "Pembangunan/Rehabilitasi/Peningkatan Jembatan Desa", bidang: 2, satuan: "Unit" },
+    { kode: "2.2.01", nama: "Penyelenggaraan Posyandu Kesehatan Masyarakat (Makanan Tambahan, dll)", bidang: 2, satuan: "Paket" },
+    { kode: "3.1.01", nama: "Pembinaan Group Kesenian dan Kebudayaan Tingkat Desa", bidang: 3, satuan: "Kelompok" },
+    { kode: "3.2.01", nama: "Penguatan & Pelatihan Satuan Pelindungan Masyarakat (Satlinmas)", bidang: 3, satuan: "Orang" },
+    { kode: "4.1.01", nama: "Pelatihan & Bantuan Modal Usaha Bumdesa / Kelompok Tani", bidang: 4, satuan: "Paket" },
+    { kode: "5.1.01", nama: "Penanganan Keadaan Darurat / Bencana Alam", bidang: 5, satuan: "Kegiatan" },
+    { kode: "5.2.01", nama: "Penanganan Keadaan Mendesak (BLT Desa)", bidang: 5, satuan: "KPM" }
+  ];
+
+  function autoDetectData(val) {
+    let text = val.toLowerCase();
+    let satInp = document.getElementById("inp_vol_satuan");
+    
+    if (text.includes("siltap") || text.includes("tunjangan") || text.includes("insentif") || text.includes("honor")) {
+      satInp.value = "Bulan";
+    } else if (text.includes("jalan") || text.includes("drainase") || text.includes("irigasi") || text.includes("rabat")) {
+      satInp.value = "Meter";
+    } else if (text.includes("posyandu") || text.includes("pelatihan") || text.includes("makanan tambahan") || text.includes("stunting")) {
+      satInp.value = "Paket";
+    } else if (text.includes("musdes") || text.includes("musrenbang") || text.includes("pembinaan") || text.includes("bencana")) {
+      satInp.value = "Kegiatan";
+    } else if (text.includes("blt") || text.includes("bantuan")) {
+      satInp.value = "KPM";
+    }
+  }
+
+  function hitungInputManual() {
+    let vol = parseFloat(document.getElementById("inp_vol_jumlah").value) || 0;
+    let harga = parseFloat(document.getElementById("inp_harga_satuan").value) || 0;
+    document.getElementById("inp_total_biaya").value = vol * harga;
+  }
+
+  function tambahKegiatanManual() {
+    let b = document.getElementById("inp_bidang_target").value;
+    let kode = document.getElementById("inp_kode").value || "-";
+    let nama = document.getElementById("inp_nama").value || "Kegiatan Baru";
+    let vol = parseFloat(document.getElementById("inp_vol_jumlah").value) || 1;
+    let satuan = document.getElementById("inp_vol_satuan").value || "Paket";
+    let harga = parseFloat(document.getElementById("inp_harga_satuan").value) || 0;
+
+    tambahBarisTabel(b, kode, nama, vol, satuan, harga);
+    
+    document.getElementById("inp_kode").value = "";
+    document.getElementById("inp_nama").value = "";
+    document.getElementById("inp_harga_satuan").value = "0";
+    document.getElementById("inp_total_biaya").value = "0";
+
+    simpanDataKeStorage();
+  }
+
+  function tambahBarisTabel(bidang, kode, nama, vol, satuan, harga) {
+    let tbody = document.getElementById(`body_bidang_${bidang}`);
+    let rowCount = tbody.children.length + 1;
+    let total = vol * harga;
+
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="text-center row-no">${rowCount}</td>
+      <td contenteditable="true" onkeyup="simpanDataKeStorage()">${kode}</td>
+      <td contenteditable="true" onkeyup="simpanDataKeStorage()">${nama}</td>
+      <td contenteditable="true" class="text-center cell-vol" onblur="rehitungBaris(this)">${vol}</td>
+      <td contenteditable="true" class="text-center" onkeyup="simpanDataKeStorage()">${satuan}</td>
+      <td contenteditable="true" class="text-right cell-harga" onblur="rehitungBaris(this)">${harga.toLocaleString('id-ID')}</td>
+      <td class="text-right cell-total" data-value="${total}">Rp ${total.toLocaleString('id-ID')}</td>
+      <td class="text-center no-print"><button class="btn-danger" style="padding: 2px 6px;" onclick="hapusBaris(this)">X</button></td>
+    `;
+    tbody.appendChild(tr);
+    simpanDanHitung();
+  }
+
+  function rehitungBaris(el) {
+    let tr = el.closest("tr");
+    let volText = tr.querySelector(".cell-vol").innerText.replace(/\./g, '').replace(',', '.');
+    let hargaText = tr.querySelector(".cell-harga").innerText.replace(/[^0-9]/g, '');
+
+    let vol = parseFloat(volText) || 0;
+    let harga = parseFloat(hargaText) || 0;
+    let total = vol * harga;
+
+    tr.querySelector(".cell-harga").innerText = harga.toLocaleString('id-ID');
+    let cellTotal = tr.querySelector(".cell-total");
+    cellTotal.setAttribute("data-value", total);
+    cellTotal.innerText = "Rp " + total.toLocaleString('id-ID');
+
+    simpanDanHitung();
+  }
+
+  function hapusBaris(btn) {
+    let tr = btn.closest("tr");
+    let tbody = tr.closest("tbody");
+    tr.remove();
+    
+    Array.from(tbody.children).forEach((row, idx) => {
+      row.querySelector(".row-no").innerText = idx + 1;
+    });
+
+    simpanDanHitung();
+  }
+
+  function simpanDanHitung() {
+    hitungkanTotal();
+    simpanDataKeStorage();
+  }
+
+  function hitungkanTotal() {
+    let paguIndikatif = parseFloat(document.getElementById("inp_pagu").value) || 0;
+    let grandTotal = 0;
+
+    for (let i = 1; i <= 5; i++) {
+      let totalBidang = 0;
+      let rows = document.querySelectorAll(`#body_bidang_${i} tr`);
+      
+      rows.forEach(row => {
+        let cellTotal = row.querySelector(".cell-total");
+        if (cellTotal) {
+          totalBidang += parseFloat(cellTotal.getAttribute("data-value") || 0);
+        }
+      });
+
+      document.getElementById(`subtotal_bidang_${i}`).innerText = "Rp " + totalBidang.toLocaleString('id-ID');
+      grandTotal += totalBidang;
+    }
+
+    let sisa = paguIndikatif - grandTotal;
+    document.getElementById("inp_total_alokasi").value = "Rp " + grandTotal.toLocaleString('id-ID');
+    document.getElementById("inp_sisa_pagu").value = "Rp " + sisa.toLocaleString('id-ID');
+    
+    let elSisa = document.getElementById("inp_sisa_pagu");
+    if (sisa < 0) {
+      elSisa.style.color = "#ff4d4d";
+    } else {
+      elSisa.style.color = "#2ecc71";
+    }
+  }
+
+  /* =========================================================
+     3. FITUR PENYIMPANAN OTOMATIS (LOCAL STORAGE) & TAHUN
+     ========================================================= */
+  function getStorageKey() {
+    let tahun = document.getElementById("inp_tahun").value;
+    return `rkp_desa_kaduagung_${tahun}`;
+  }
+
+  function gantiTahun() {
+    let tahun = document.getElementById("inp_tahun").value;
+    document.getElementById("txt_tahun_judul").innerText = tahun;
+    document.getElementById("txt_tahun_ttd").innerText = tahun;
+    muatDataDariStorage();
+  }
+
+  function simpanDataKeStorage() {
+    let tahun = document.getElementById("inp_tahun").value;
+    let pagu = document.getElementById("inp_pagu").value;
+    let dataBidang = {};
+
+    for (let i = 1; i <= 5; i++) {
+      dataBidang[i] = [];
+      let rows = document.querySelectorAll(`#body_bidang_${i} tr`);
+      rows.forEach(row => {
+        let cols = row.querySelectorAll("td");
+        if (cols.length >= 7) {
+          dataBidang[i].push({
+            kode: cols[1].innerText.trim(),
+            nama: cols[2].innerText.trim(),
+            vol: cols[3].innerText.trim(),
+            satuan: cols[4].innerText.trim(),
+            harga: cols[5].innerText.replace(/[^0-9]/g, '')
+          });
+        }
+      });
+    }
+
+    let payload = {
+      pagu: pagu,
+      bidang: dataBidang
+    };
+
+    localStorage.setItem(getStorageKey(), JSON.stringify(payload));
+  }
+
+  function muatDataDariStorage() {
+    let saved = localStorage.getItem(getStorageKey());
+    
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById(`body_bidang_${i}`).innerHTML = "";
+    }
+
+    if (!saved) {
+      loadDefaultStandard();
+      return;
+    }
+
+    let parsed = JSON.parse(saved);
+    document.getElementById("inp_pagu").value = parsed.pagu || 827799193;
+
+    for (let i = 1; i <= 5; i++) {
+      if (parsed.bidang && parsed.bidang[i]) {
+        parsed.bidang[i].forEach(item => {
+          tambahBarisTabel(i, item.kode, item.nama, parseFloat(item.vol) || 0, item.satuan, parseFloat(item.harga) || 0);
+        });
+      }
+    }
+    hitungkanTotal();
+  }
+
+  function resetKeDefault() {
+    if (confirm("Apakah Anda yakin ingin mengembalikan data tahun ini ke setelan awal default? Data yang ditambahkan manual akan terhapus.")) {
+      localStorage.removeItem(getStorageKey());
+      muatDataDariStorage();
+    }
+  }
+
+  function loadDefaultStandard() {
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById(`body_bidang_${i}`).innerHTML = "";
+    }
+
+    tambahBarisTabel(1, "1.1.01", "Penyediaan Penghasilan Tetap dan Tunjangan Kepala Desa", 12, "Bulan", 3500000);
+    tambahBarisTabel(1, "1.1.02", "Penyediaan Penghasilan Tetap dan Tunjangan Perangkat Desa", 12, "Bulan", 2500000);
+    tambahBarisTabel(1, "1.2.01", "Penyelenggaraan Musyawarah Desa (Musrenbangdes)", 2, "Kegiatan", 5000000);
+
+    tambahBarisTabel(2, "2.1.01", "Pembangunan Jalan Usaha Tani / Rabat Beton", 250, "Meter", 450000);
+    tambahBarisTabel(2, "2.2.01", "Penyelenggaraan Posyandu & Pemberian Makanan Tambahan (PMT)", 12, "Paket", 3500000);
+
+    tambahBarisTabel(3, "3.1.01", "Pembinaan Group Kesenian dan Kebudayaan Desa", 1, "Kelompok", 10000000);
+    tambahBarisTabel(3, "3.2.01", "Pelatihan & Pelindungan Masyarakat (Satlinmas)", 15, "Orang", 500000);
+
+    tambahBarisTabel(4, "4.1.01", "Pelatihan Penguatan Modal Usaha BUMDes", 1, "Paket", 25000000);
+
+    tambahBarisTabel(5, "5.2.01", "Penanganan Keadaan Mendesak (BLT Desa)", 20, "KPM", 3600000);
+
+    simpanDanHitung();
+  }
+
+  function bukaKamus() {
+    document.getElementById("modalKamus").style.display = "flex";
+    renderKamus(kamusSDGsData);
+  }
+
+  function tutupKamus() {
+    document.getElementById("modalKamus").style.display = "none";
+  }
+
+  function renderKamus(data) {
+    let container = document.getElementById("kamus_list");
+    container.innerHTML = "";
+    data.forEach(item => {
+      let div = document.createElement("div");
+      div.style.cssText = "padding: 10px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center;";
+      div.innerHTML = `
+        <div>
+          <strong>[${item.kode}]</strong> ${item.nama} <br>
+          <small style="color: #aaa;">Bidang: ${item.bidang} | Satuan Default: ${item.satuan}</small>
+        </div>
+        <button class="btn-success" style="padding: 4px 8px;" onclick="pilihDariKamus('${item.kode}', '${item.nama}', ${item.bidang}, '${item.satuan}')">Gunakan</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function filterKamus() {
+    let query = document.getElementById("inp_filter_kamus").value.toLowerCase();
+    let filtered = kamusSDGsData.filter(i => i.nama.toLowerCase().includes(query) || i.kode.includes(query));
+    renderKamus(filtered);
+  }
+
+  function pilihDariKamus(kode, nama, bidang, satuan) {
+    document.getElementById("inp_bidang_target").value = bidang;
+    document.getElementById("inp_kode").value = kode;
+    document.getElementById("inp_nama").value = nama;
+    document.getElementById("inp_vol_satuan").value = satuan;
+    tutupKamus();
+  }
+
+  window.onload = function() {
+    muatDataDariStorage();
+  };
+</script>
+
+</body>
+</html>
